@@ -1,4 +1,4 @@
-<canvas id="c" width="400" height="400"></canvas>
+<canvas id="c" width="800" height="400"></canvas>
 <script type="text/javascript">
 canvas = document.getElementById("c");
 ctx = canvas.getContext("2d");
@@ -6,11 +6,12 @@ ctx = canvas.getContext("2d");
 function reset() {
 	x = getRandomInt(20, canvas.width-20);
 	y = canvas.height;
-	vx = 0;
-	vy = -25;
+	vx = getRandomInt(-5, 5);
+	vy = getRandomInt(-20, -30);
 
 	gravity = 1.2;
 
+	exploAmount = getRandomInt(10, 50);
 	explosions = [];
 }
 
@@ -20,8 +21,8 @@ function render() {
 
 	// when get at max height, get random direction
 	if (vy >= 0 && !explosions.length) {
-		for (var i = 0; i < 30; i++) {
-			explosions[i] = {x: x, y: y, vx: getRandomInt(-8, 8), vy: getRandomInt(-15, 10)};
+		for (var i = 0; i < exploAmount; i++) {
+			explosions[i] = {x: x, y: y, vx: getRandomInt(-10, 10), vy: getRandomInt(-15, 10)};
 		}
 	} else if (explosions.length) {
 		for (var expl of explosions) {
