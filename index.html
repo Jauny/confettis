@@ -4,50 +4,50 @@ canvas = document.getElementById("c");
 ctx = canvas.getContext("2d");
 
 function reset() {
-	x = getRandomInt(20, canvas.width-20);
-	y = canvas.height;
-	vx = getRandomInt(-5, 5);
-	vy = getRandomInt(-20, -30);
+  x = getRandomInt(20, canvas.width-20);
+  y = canvas.height;
+  vx = getRandomInt(-5, 5);
+  vy = getRandomInt(-20, -30);
 
-	gravity = 1.2;
+  gravity = 1.2;
 
-	exploAmount = getRandomInt(10, 50);
-	explosions = [];
+  exploAmount = getRandomInt(10, 50);
+  explosions = [];
 }
 
 function render() {
-	ctx.fillStyle = "black";
-	ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-	// when get at max height, get random direction
-	if (vy >= 0 && !explosions.length) {
-		for (var i = 0; i < exploAmount; i++) {
-			explosions[i] = {x: x, y: y, vx: getRandomInt(-10, 10), vy: getRandomInt(-15, 10)};
-		}
-	} else if (explosions.length) {
-		for (var expl of explosions) {
-			expl.vy += gravity;
-			expl.x += expl.vx;
-			expl.y += expl.vy;
+  // when get at max height, get random direction
+  if (vy >= 0 && !explosions.length) {
+    for (var i = 0; i < exploAmount; i++) {
+      explosions[i] = {x: x, y: y, vx: getRandomInt(-10, 10), vy: getRandomInt(-15, 10)};
+    }
+  } else if (explosions.length) {
+    for (var expl of explosions) {
+      expl.vy += gravity;
+      expl.x += expl.vx;
+      expl.y += expl.vy;
 
-			randomFillColor();
-			ctx.beginPath();
-			ctx.arc(expl.x, expl.y, 2, 0, 2 * Math.PI);
-			ctx.fill();
-		}
-	} else {
-		// gravity affects y velocity
-		vy += gravity;
+      randomFillColor();
+      ctx.beginPath();
+      ctx.arc(expl.x, expl.y, 2, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+  } else {
+    // gravity affects y velocity
+    vy += gravity;
 
-		// reposition pixel
-		x += vx;
-		y += vy;
-		
-		randomFillColor();
-		ctx.beginPath();
-		ctx.arc(x, y, 2, 0, 2 * Math.PI);
-		ctx.fill();
-	}
+    // reposition pixel
+    x += vx;
+    y += vy;
+    
+    randomFillColor();
+    ctx.beginPath();
+    ctx.arc(x, y, 2, 0, 2 * Math.PI);
+    ctx.fill();
+  }
 
 
 }
@@ -57,10 +57,10 @@ function getRandomInt(min, max) {
 }
 
 function randomFillColor() {
-	r = getRandomInt(0, 255);
-	g = getRandomInt(0, 255);
-	b = getRandomInt(0, 255);
-	ctx.fillStyle = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+  r = getRandomInt(0, 255);
+  g = getRandomInt(0, 255);
+  b = getRandomInt(0, 255);
+  ctx.fillStyle = 'rgb(' + r + ', ' + g + ', ' + b + ')';
 }
 
 reset()
