@@ -4,6 +4,7 @@ canvas = document.getElementById("c");
 ctx = canvas.getContext("2d");
 
 function Confetti(canvas, gravity) {
+  this.color = randomFillColor();
   this.ctx = canvas.getContext("2d");
   this.gravity = gravity;
   this.exploAmount = getRandomInt(10, 50);
@@ -38,7 +39,7 @@ Confetti.prototype.update = function() {
 }
 
 Confetti.prototype.render = function() {
-  randomFillColor();
+  ctx.fillStyle = this.color;
   for (var expl of this.explosions) {
       this.ctx.beginPath();
       this.ctx.arc(expl.x, expl.y, 2, 0, 2 * Math.PI);
@@ -81,7 +82,7 @@ function randomFillColor() {
   r = getRandomInt(0, 255);
   g = getRandomInt(0, 255);
   b = getRandomInt(0, 255);
-  ctx.fillStyle = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+  return 'rgb(' + r + ', ' + g + ', ' + b + ')';
 }
 setup(canvas);
 </script>
