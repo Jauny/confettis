@@ -3,53 +3,74 @@
 canvas = document.getElementById("c");
 ctx = canvas.getContext("2d");
 
-function reset() {
-  x = getRandomInt(20, canvas.width-20);
-  y = canvas.height;
-  vx = getRandomInt(-5, 5);
-  vy = getRandomInt(-20, -30);
+function Confetti(canvas, gravity) {
+  this.ctx = canvas.getContext("2d");
+  this.gravity = gravity;
+  this.exploAmount = getRandomInt(10, 50);
 
-  gravity = 1.2;
-
-  exploAmount = getRandomInt(10, 50);
-  explosions = [];
+  this.explosions = [{
+    x: getRandomInt(20, canvas.width-20),
+    y: canvas.height,
+    vx: getRandomInt(-5, 5),
+    vy: getRandomInt(-20, -30)
+  }];
 }
 
-function render() {
+Confetti.prototype.update = function() {
+  // if there is still only the main explosion and it's at peak height
+  if (this.explosions.length === 1 && this.explosions[0].vy >= 0)  {
+    var main = this.explosions.shift();
+    for (var i = 0; i < this.exploAmount; i++) {
+      this.explosions[i] = {
+        x: main.x,
+        y: main.y,
+        vx: getRandomInt(-10, 10),
+        vy: getRandomInt(-15, 10)
+      };
+    }
+  }
+
+  for (var expl of this.explosions) {
+    expl.vy += this.gravity;
+    expl.x += expl.vx;
+    expl.y += expl.vy;
+  }
+}
+
+Confetti.prototype.render = function() {
+  randomFillColor();
+  for (var expl of this.explosions) {
+      this.ctx.beginPath();
+      this.ctx.arc(expl.x, expl.y, 2, 0, 2 * Math.PI);
+      this.ctx.fill();
+  }
+}
+
+function render(confettis) {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // when get at max height, get random direction
-  if (vy >= 0 && !explosions.length) {
-    for (var i = 0; i < exploAmount; i++) {
-      explosions[i] = {x: x, y: y, vx: getRandomInt(-10, 10), vy: getRandomInt(-15, 10)};
-    }
-  } else if (explosions.length) {
-    for (var expl of explosions) {
-      expl.vy += gravity;
-      expl.x += expl.vx;
-      expl.y += expl.vy;
-
-      randomFillColor();
-      ctx.beginPath();
-      ctx.arc(expl.x, expl.y, 2, 0, 2 * Math.PI);
-      ctx.fill();
-    }
-  } else {
-    // gravity affects y velocity
-    vy += gravity;
-
-    // reposition pixel
-    x += vx;
-    y += vy;
-    
-    randomFillColor();
-    ctx.beginPath();
-    ctx.arc(x, y, 2, 0, 2 * Math.PI);
-    ctx.fill();
+  for (var confetti of confettis) {
+    confetti.update();
+    confetti.render();
   }
+}
 
+function setup(canvas) {
+  var gravity = 1.2;
+  var confettis = [];
 
+  var generateConfettis = function() {
+    for (var i = 0; i < getRandomInt(1, 5); i++) {
+      confettis.push(new Confetti(canvas, gravity));
+    }
+  }
+  generateConfettis()
+  window.setInterval(generateConfettis, 1000);
+
+  window.setInterval(function() {
+    render(confettis)
+  }, 1000/30);
 }
 
 function getRandomInt(min, max) {
@@ -62,11 +83,5 @@ function randomFillColor() {
   b = getRandomInt(0, 255);
   ctx.fillStyle = 'rgb(' + r + ', ' + g + ', ' + b + ')';
 }
-
-reset()
-window.setInterval(render, 1000/30)
-window.setInterval(reset, 2000)
-
-
-
+setup(canvas);
 </script>
